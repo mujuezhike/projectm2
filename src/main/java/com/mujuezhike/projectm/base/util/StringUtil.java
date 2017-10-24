@@ -84,6 +84,7 @@ public class StringUtil {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void main(String args[]) {
 		
 		System.out.println(isNumeric("4"));
@@ -92,6 +93,7 @@ public class StringUtil {
 		System.out.println(isNumeric("33.232"));
 		System.out.println(isNumeric("-33.232"));
 		System.out.println(isNumeric("-33.2321ss32"));
+		
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list =new ArrayList<Object>();
@@ -103,6 +105,7 @@ public class StringUtil {
 		map.put("list", list);
 		
 		String ss = JSON.toJSONString(map);
+		
 		map = (Map<String,Object>)JSON.parse(ss);
 		
 		List<Object> ee = (List<Object>)map.get("list");

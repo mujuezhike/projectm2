@@ -68,7 +68,6 @@ public class ObjectServiceImpl implements ObjectService{
 		return map;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> get(String tablename, String id) {
 		
@@ -96,6 +95,7 @@ public class ObjectServiceImpl implements ObjectService{
 	@Override
 	public Map<String, Object> getAddtion(Map<String, Object> map, Map<String, Object> headmap) {
 		
+		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> columnlist = (List<Map<String, Object>>)headmap.get("_table_columns");
 		
 		for(Map<String, Object> column:columnlist) {

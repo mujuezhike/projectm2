@@ -1,22 +1,18 @@
 package com.mujuezhike.projectm.base.object.dao.impl;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import com.mujuezhike.projectm.base.cache.CLKeyGenerator;
 import com.mujuezhike.projectm.base.cache.Cache;
 import com.mujuezhike.projectm.base.object.bean.KVBean;
 import com.mujuezhike.projectm.base.object.dao.ObjectDao;
+import com.mujuezhike.projectm.base.object.dao.id.IdGenerator;
 import com.mujuezhike.projectm.base.util.StringUtil;
 
 @Component
@@ -27,12 +23,16 @@ public class ObjectDaoImpl implements ObjectDao {
 	
 	@Autowired
 	private Cache cache;
+	
+	@Autowired
+	private IdGenerator idGenerator;
 
 	@Override
 	public Map<String, Object> getById(String tablename, String id) {
 
 		String key = CLKeyGenerator.getObjectIdKey(tablename,id);
-		
+
+		@SuppressWarnings("unchecked")
 		Map<String, Object> cmap = cache.getObject(key, Map.class);
 		if(cmap!=null) {
 			return cmap;
@@ -136,8 +136,11 @@ public class ObjectDaoImpl implements ObjectDao {
 	public Map<String, Object> add(String tablename, Map<String, Object> beanmap) {
 
 		List<String> insertbean = new ArrayList<String>();
+		insertbean.add(idGenerator.key());
 		
 		List<String> valuebean = new ArrayList<String>();
+		String nid = idGenerator.generator();
+		valuebean.add(nid);
 		
 		for(String key:beanmap.keySet()) {
 			
@@ -157,16 +160,9 @@ public class ObjectDaoImpl implements ObjectDao {
 		                 + " VALUES "
 				         + StringUtil.sqlBracketsSqlBean(valuebean);
 
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		PreparedStatementCreator preparedStatementCreator = con -> {
-			PreparedStatement ps = con.prepareStatement(insertsql, Statement.RETURN_GENERATED_KEYS);
-			return ps;
-		};
-
-		jdbcTemplate.update(preparedStatementCreator, keyHolder);
+		jdbcTemplate.execute(insertsql);
 		
-		String genId = keyHolder.getKey().toString();
-		beanmap = getById(tablename,genId);
+		beanmap = getById(tablename,nid);
 
 		return beanmap;
 	}

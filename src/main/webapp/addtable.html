@@ -152,12 +152,9 @@
 		    dataType:"json",
 		    contentType:"application/json"
 		}).done(function(resp){
-		    console.log(file.id+":"+file.name+" 上传完毕");
-		    if(resp.success){
-		        
-		    }else{
-		       
-		    }
+		   
+			console.info(resp);
+			
 		});
 	});
 	
