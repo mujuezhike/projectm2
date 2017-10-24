@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="sui-componentWrap">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta content="always" name="referrer">
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<title>元数据添加</title>
+<style>
+	 /** 添加按钮   **/
+	.bt_idn_div{
+		position:absolute;
+		top:0px;
+		left:100px;
+	}
+	.bt_idn{
+		cursor:pointer;
+		width:30px;
+		text-align:center;
+	}
+	.bt_idn:hover{
+		color:#FFF;
+		background-color:#000;
+		
+	}
+	
+	 /** 删除按钮 **/
+	.bt_del{
+		cursor:pointer;
+		width:30px;
+		text-align:center;
+	}
+	.bt_del:hover{
+		color:#FFF;
+		background-color:#000;
+		
+	}
+	
+	.cinput{
+		position:relative; 
+		height:25px;
+	}
+	.cinputbean{
+		position:relative;
+		float:left; 
+		margin-right:10px;
+	}
+	.inputbean{
+		position:relative;
+	}
+</style>
+</head>
+<body>
+	<div>元数据添加</div>
+	<div class="inputbean">
+		<div>数据名称</div>
+		<div class="tablebox">
+			<div class="cinput">
+				<div class="cinputbean">
+					<input type="text" class="i_name"/>
+				</div>
+				<div class="cinputbean"><select class="i_structure_type"></select></div>
+			</div>
+		</div>	
+	</div>
+	<div class="inputbean property_inputbean">
+		<div>属性</div>
+		<div class="box">
+		</div>
+		<div class="bt_idn_div">
+			<div class="bt_idn">+</div>
+		</div>
+	</div>
+	<div class="inputbean">
+		<div>完成</div>
+		<div class="bt_idn_div">
+			<div class="bt_ok">OK</div>
+		</div>
+	</div>
+</body>
+<script >
+	var structureTypes = [];
+	$.get("./o/l/t_table_structure_type", function(result){
+		structureTypes = result;
+		//console.info(result);
+		if(structureTypes){
+			for(var i=0;i<structureTypes.length;i++){
+					var ot = $('<option value ="'+structureTypes[i].id+'">'+structureTypes[i].name+'</option>');
+					$('.i_structure_type').append(ot);	
+			}
+		}
+	},"json");
+
+	var columnTypes = [];
+	$.get("./o/l/t_column_column_type", function(result){
+		columnTypes = result;
+		//console.info(result);
+  	},"json");
+
+	$(".bt_idn").click(function(){
+		
+		var cinput = $('<div class="cinput column_i"></div>');
+		//名称
+		var iiname = $('<div class="cinputbean"><input type="text" class="ii_name"/></div>')
+		//类型
+		var iitype = $('<div class="cinputbean"><select class="ii_column_type"></select></div>')
+		//删除按钮
+		var btdel = $('<div class="cinputbean"><div class="bt_del">-</div></div>')
+		if(columnTypes){
+			for(var i=0;i<columnTypes.length;i++){
+				if(columnTypes[i].id <20){
+					var ot = $('<option value ="'+columnTypes[i].id+'">'+columnTypes[i].name+'</option>');
+					$(iitype).find('.ii_column_type').append(ot);	
+				}
+				
+			}
+		}
+		
+		$(cinput).append(iiname);
+		$(cinput).append(iitype);
+		$(cinput).append(btdel);
+		
+		$(btdel).click(function(){
+			$(cinput).remove();
+		});
+		
+		$(".box").append(cinput);
+	});
+	
+	$(".bt_ok").click(function(){
+		
+		var tableobj = {};
+		tableobj.name = $('.i_name').val() || '';
+		tableobj.structure_type = $('.i_structure_type').val() || '';
+		var columnlist = [];
+		
+		var column_i = $('.column_i');
+		for(var i=0;i<column_i.length;i++){
+			var columnbean = {};
+			columnbean.name = $(column_i[i]).find('.ii_name').val() || '';
+			columnbean.column_type = $(column_i[i]).find('.ii_column_type').val() || '';
+			columnlist.push(columnbean);
+		}
+		
+		tableobj._table_columns = columnlist
+		
+		//console.info(tableobj);
+		$.ajax({
+		    url:"./o/ha",
+		    data:JSON.stringify(tableobj),
+		    type:'POST',
+		    dataType:"json",
+		    contentType:"application/json"
+		}).done(function(resp){
+		    console.log(file.id+":"+file.name+" 上传完毕");
+		    if(resp.success){
+		        
+		    }else{
+		       
+		    }
+		});
+	});
+	
+</script>
+</html>
