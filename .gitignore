@@ -16,6 +16,9 @@ out/
 .project
 .settings/
 .metadata/
+
+# STS
+.springBeans
  
 # OS X
 .DS_Store
