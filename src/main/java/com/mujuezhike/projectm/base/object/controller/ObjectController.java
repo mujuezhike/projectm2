@@ -135,8 +135,44 @@ public class ObjectController {
 			
 			return JSON.toJSONString(list);
 		}
+		
+		/** 获取列表信息 **/
+		/**
+		 * @author mujuezhike
+		 * @date   20170927
+		 * 固定  搜索参数
+		 * ?limit=10
+		 * ?offset=10
+		 * ?page=2           *
+		 * ?perpage=100      *
+		 * ?sortby=name
+		 * ?order=asc
+		 * 参数  搜索参数  都以 and 关联
+		 * ?oid=_e_312312      oid =  312312
+		 * ?oid=_gt_1233       oid >  1233
+		 * ?oid=_lt_1233       oid <  1233
+		 * ?oid=_n_1233        oid != 1233
+		 * ?oid=_l_1233        oid LIKE '%1233%'
+		 * ?ned.emmd=_e_312312 ned.emmd = 312312 //关联表  *
+		 */
+		@RequestMapping(value = "/o/lu/{TABLENAME}")
+		public String listUlti(    HttpServletRequest request
+				              ,HttpServletResponse response
+				 			  ,@PathVariable("TABLENAME") String tableName){
+			Map<String,String[]> pmap = request.getParameterMap();
+			Map<String,Object> beanmap = new HashMap<String,Object>();
+			
+			for(String key:pmap.keySet()) {				
+				beanmap.put(key,pmap.get(key)[0]);
+				//System.out.println(key+":"+pmap.get(key)[0]);
+			}
+			
+			List<Map<String,Object>> list = objectService.listUlti(tableName, beanmap,null);
+			
+			return JSON.toJSONString(list);
+		}
 	
-		/** 获取单条信息  **/
+		/** 获取单条信息  单层**/
 		@RequestMapping(value = "/o/go/{TABLENAME}/{ID}")
 	    public String getOri(     HttpServletRequest request
 	            		      ,HttpServletResponse response
@@ -146,13 +182,23 @@ public class ObjectController {
 			return JSON.toJSONString(map);
 	    }
 		
-	 	/** 获取单条信息  **/
+	 	/** 获取单条信息  两层**/
 		@RequestMapping(value = "/o/g/{TABLENAME}/{ID}")
 	    public String get(     HttpServletRequest request
 	            		      ,HttpServletResponse response
 	    		              ,@PathVariable("ID") String id
 	    		              ,@PathVariable("TABLENAME") String tableName){
 			Map<String, Object> map = objectService.get(tableName, id);
+			return JSON.toJSONString(map);
+	    }
+		
+		/** 获取单条信息  max层 **/
+		@RequestMapping(value = "/o/gu/{TABLENAME}/{ID}")
+	    public String getUlti(     HttpServletRequest request
+	            		      ,HttpServletResponse response
+	    		              ,@PathVariable("ID") String id
+	    		              ,@PathVariable("TABLENAME") String tableName){
+			Map<String, Object> map = objectService.getUlti(tableName, id, null);
 			return JSON.toJSONString(map);
 	    }
 		

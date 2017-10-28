@@ -39,6 +39,7 @@ public class ObjectDaoImpl implements ObjectDao {
 		}
 		
 		String sql = "select * from " + tablename + " WHERE id = " + StringUtil.sqlBean(id);
+
 		Map<String, Object> map = jdbcTemplate.queryForMap(sql);
 		
 		cache.set(key, map);

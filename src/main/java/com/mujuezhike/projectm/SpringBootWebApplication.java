@@ -1,4 +1,4 @@
-package com.mujuezhike.projectm.base;
+package com.mujuezhike.projectm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
