@@ -14,7 +14,7 @@ public class LockTest implements Runnable{
 	
 	public static void main(String[] args) {
 		    SpinLock lock = new SpinLock();  
-	        for (int i = 0; i < 100; i++) {  
+	        for (int i = 0; i < 1100; i++) {  
 	        	LockTest test = new LockTest(lock);  
 	            Thread t = new Thread(test);  
 	            t.start();  
